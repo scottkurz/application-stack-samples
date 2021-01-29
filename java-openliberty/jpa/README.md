@@ -8,7 +8,7 @@ This scenario illustrates binding an odo managed Java MicroServices JPA applicat
 
 odo is a CLI tool for creating applications on OpenShift and Kubernetes. odo allows developers to concentrate on creating applications without the need to administer a cluster itself. Creating deployment configurations, build configurations, service routes and other OpenShift or Kubernetes elements are all automated by odo.
 
-Before proceeding, please [install the latest v2.0.0-alpha-2 odo CLI](https://odo.dev/docs/installing-odo/)
+Before proceeding, please [install the latest odo CLI](https://odo.dev/docs/installing-odo/)
 
 ## Actions to Perform by Users in 2 Roles
 
@@ -27,7 +27,7 @@ The cluster admin needs to install 2 operators into the cluster:
 A Backing Service Operator that is "bind-able," in other
 words a Backing Service Operator that exposes binding information in secrets, config maps, status, and/or spec
 attributes. The Backing Service Operator may represent a database or other services required by
-applications. We'll use [Crunchy Data PostgreSQL Operator](https://operatorhub.io/operator/postgresql) to
+applications. We'll use Dev4Devs PostgreSQL Operator found in the OperatorHub to
 demonstrate a sample use case.
 
 #### Install the Service Binding Operator
@@ -46,6 +46,31 @@ Access your Openshift Console and install the Dev4Devs PostgreSQL Operator from 
 
 ![Service Binding Operator as shown in OperatorHub](./assets/Dev4DevsPG.jpg)
 - NOTE: Install operator into the namespace created above
+
+Create a database via the Dev4Devs PostgreSQL Database Operator:
+Navigate to Operators > Installed Operators > PostgreSQL Operator by Dev4Ddevs.com
+- Click on the 'Database Database' tab
+- Click on the 'Create Database' button
+- Change the value in the Database User field to 'sampleuser'
+- Change the value in the Database Password field to 'samplepwd'
+- Click on the 'Create' button at bottom of page
+
+Add Database connection annotations to the Database Resource Definition:
+- Navigate to Operators > Installed Operators > PostgreSQL Operator by Dev4Ddevs.com
+- Click on the "Database Database" tab
+- Click on the new database entry in the list
+- Click on the YAML tab
+
+Add the following annotation block to the metadata block in the YAML as a sub-entry: 
+
+```
+  annotations:
+    service.binding/db.name: 'path={.spec.databaseName}'
+    service.binding/db.password: 'path={.spec.databasePassword}'
+    service.binding/db.user: 'path={.spec.databaseUser}'
+```
+- Save the YAML
+- Reload the YAML
 
 ### Application Developer
 
@@ -125,16 +150,16 @@ ep1      Pushed     http://ep1-mysboproj-service-binding-demo.apps.ajm01.cp.fyre
 ```
 
 Use URL to navigate to the CreatePerson.xhtml data entry page and enter requested data:
-`[URL]/CreatePerson.xhtml' and enter a user's name and age data via teh form.
+'URL/CreatePerson.xhtml' and enter a user's name and age data via the form.
 
 Click on the "Save" button when complete
-![Create Person xhtml page](../../assets/createPerson.png)
+![Create Person xhtml page](./assets/createPerson.jpg)
 
 Note that the entry of any data does not result in the data being displayed when you click on the "View Persons Record List" link
 
 #### Express an intent to bind the DB and the application
 
-Now, the only thing that remains is to connect the DB and the application. We will use odo to create a link to the Service Binding Operator and will manually configure the resulting Service Binding Request to 'magically' do the connection for us.
+Now, the only thing that remains is to connect the DB and the application. We will use odo to create a link to the Dev4Devs PostgreSQL Database Operator in order to access the database connection information.
 
 Display the services available to odo: - You will see an entry for the PostgreSQL Database Operator displayed:
 
@@ -153,31 +178,6 @@ push this service instance to the cluster
 ```shell
 > odo push
 ```
-
-Create a database via the PostgreSQL Database Operator:
-Navigate to Operators > Installed Operators > PostgreSQL Operator by Dev4Ddevs.com
-- Click on the 'Database Database' tab
-- Click on the 'Create Database' button
-- Change the value in the Database User field to 'sampleuser'
-- Change the value in the Database Password field to 'samplepwd'
-- Click on the 'Create' button at bottom of page
-
-Add Database connection annotations to the Database Resource Definition:
-- Navigate to Operators > Installed Operators > PostgreSQL Operator by Dev4Ddevs.com
-- Click on the "Database Database" tab
-- Click on the new database entry in the list
-- Click on the YAML tab
-
-Add the following annotation block to the metadata block in the YAML as a sub-entry: 
-
-```
-  annotations:
-    service.binding/db.name: 'path={.spec.databaseName}'
-    service.binding/db.password: 'path={.spec.databasePassword}'
-    service.binding/db.user: 'path={.spec.databaseUser}'
-```
-- Save the YAML
-- Reload the YAML
 
 List this service
 ```shell
