@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.microshed.testing.SharedContainerConfig;
 import org.microshed.testing.jaxrs.RESTClient;
 import org.microshed.testing.jupiter.MicroShedTest;
@@ -39,12 +40,14 @@ public class DatabaseIT {
 	public void testGetPerson() {
 		Long bobId = personSvc.createPerson("postgre", 24);
 		Person bob = personSvc.getPerson(bobId);
+        System.out.println("SKSK: bobId = " + bobId + ", created =" + bob );
 		assertEquals("postgre", bob.getName());
 		assertEquals(24, bob.getAge());
 
 		personSvc.removePerson(bobId);
 	}
 
+	//@Disabled
 	@Test
 	public void testGetAllPeople() {
 		Long person1Id = personSvc.createPerson("Person1", 1);
@@ -54,6 +57,11 @@ public class DatabaseIT {
 		Person expected2 = new Person("Person2", 2, person2Id);
 
 		Collection<Person> allPeople = personSvc.getAllPeople();
+        System.out.println("SKSK: printing all people");
+        allPeople.forEach(name -> System.out.println(name));
+
+        System.out.println("SKSK: expected1 =" + expected1 );
+        System.out.println("SKSK: expected2 =" + expected2 );
 		assertTrue(allPeople.size() >= 2, "Expected at least 2 people to be registered, but there were only: " + allPeople);
 		assertTrue(allPeople.contains(expected1), "Did not find person " + expected1 + " in all people: " + allPeople);
 		assertTrue(allPeople.contains(expected2), "Did not find person " + expected2 + " in all people: " + allPeople);

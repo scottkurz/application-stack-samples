@@ -65,14 +65,21 @@ public class Person implements Serializable {
      
     public void setName(String name) {
         this.name = name;
+        System.out.println("SKSK: setName = " + name);
     }
 
     public void setAge(int age) {
+        System.out.println("SKSK: setAge = " + age);
         this.age = age;
     }
 
     public long getId(){
         return id;
+    }
+
+    public void setId(long id){
+        System.out.println("SKSK: setId = " + id);
+        this.id = id;
     }
 
     public String getName(){
@@ -84,16 +91,19 @@ public class Person implements Serializable {
     }
 
     public Person() {
+        System.out.println("SKSK: In Person ctor()");
     }    
  
     public Person(String name, int age) {
         this(name, age, null);
+        System.out.println("SKSK: Done Person ctor(name,age)");
     }
 
     //@JsonbCreator
     public Person(String name,
                   int age,
                   Long id) {
+        System.out.println("SKSK: In Person ctor(name,age,id): id = " + id + ", name = " + name + ", age =" + age);
         this.name = name;
         this.age = age;
         this.id = id == null ? r.nextLong() : id;
@@ -112,6 +122,11 @@ public class Person implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, age);
+    }
+
+    @Override
+    public String toString() {
+        return "toString(): id = " + id + ", name = " + name + ", age =" + age;
     }
 
 }
