@@ -32,6 +32,7 @@
         <version.maven-war-plugin>3.3.1</version.maven-war-plugin>
         <version.maven-surefire-plugin>3.0.0-M1</version.maven-surefire-plugin>
         <version.maven-failsafe-plugin>3.0.0-M1</version.maven-failsafe-plugin>
+        <maven.failsafe.debug>true</maven.failsafe.debug>
         <http.port>9080</http.port>
         <https.port>9443</https.port>
         <version.liberty-maven-plugin>3.2</version.liberty-maven-plugin>
@@ -137,6 +138,87 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+	<profiles>
+        <profile>
+			<id>fabric</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>fabric</name>
+				</property>
+			</activation>
+            <properties>
+                        <liberty.defaultVar.DATABASE_CLUSTERIP>localhost</liberty.defaultVar.DATABASE_CLUSTERIP>
+        <liberty.defaultVar.POSTGRES_PORT>5432</liberty.defaultVar.POSTGRES_PORT>
+        <liberty.defaultVar.DATABASE_DB_USER>test</liberty.defaultVar.DATABASE_DB_USER>
+        <liberty.defaultVar.DATABASE_DB_PASSWORD>test</liberty.defaultVar.DATABASE_DB_PASSWORD>
+        <liberty.defaultVar.DATABASE_DB_NAME>sampledb</liberty.defaultVar.DATABASE_DB_NAME>
+    </properties>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.34.1</version>
+						<configuration>
+							<logDate>none</logDate>
+							<images>
+								<image>
+									<alias>db</alias>
+									<name>postgres:9.6.0</name>
+									<run>
+										<cmd>-c max_prepared_transactions=30</cmd>
+										<namingStrategy>none</namingStrategy>
+										<env>
+                                            <POSTGRES_USER>${liberty.defaultVar.DATABASE_DB_USER}</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>${liberty.defaultVar.DATABASE_DB_PASSWORD}</POSTGRES_PASSWORD>
+                                            <POSTGRES_DB>${liberty.defaultVar.DATABASE_DB_NAME}</POSTGRES_DB>
+										</env>
+										<ports>
+                                            <!-- maybe should just dflt to 5432 -->
+											<port>${liberty.defaultVar.POSTGRES_PORT}:${liberty.defaultVar.POSTGRES_PORT}</port>
+										</ports>
+										<log>
+											<prefix>postgres</prefix>
+											<enabled>true</enabled>
+											<color>yellow</color>
+										</log>
+										<wait>
+											<time>30000</time> <!-- 30 seconds max -->
+											<log>.*database system is ready to accept connections</log>
+										</wait>
+									</run>
+								</image>
+								<!-- <image> <alias>web</alias> <name>jboss/wildfly:9.0.2.Final</name> 
+									<run> <links> <link>db,db2</link> </links> <ports> <port>web.port:8080</port> 
+									</ports> <wait> <log>WildFly Full .* \(WildFly Core .*\) started</log> </wait> 
+									</run> </image> -->
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>start</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
     <build>
         <finalName>${project.artifactId}</finalName>

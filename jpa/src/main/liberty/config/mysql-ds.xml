@@ -3,8 +3,8 @@
                 id="mysql-ds">
       <jdbcDriver libraryRef="MySQLLib"/>
       <properties databaseName="sampledb"
-                serverName="${DB_HOSTNAME}" portNumber="${DB_PORT}"
-                user="user84U" password="wHbBsT4RwAuNfvhr"/>
+                serverName="${DB_HOSTNAME}" portNumber="5432"
+          user="${POSTGRES_USER}" password="${POSTGRES_PASSWORD}"/>
     </dataSource>
 <!-- mysql nontx ds -->
     <dataSource jndiName="jdbc/DefaultDataSourceNonJTA"
@@ -12,8 +12,8 @@
                 id="mysql-ds-nontx">
       <jdbcDriver libraryRef="MySQLLib"/>
       <properties databaseName="sampledb"
-                serverName="${DB_HOSTNAME}" portNumber="${DB_PORT}"
-                user="user84U" password="wHbBsT4RwAuNfvhr"/>
+                serverName="${DB_HOSTNAME}" portNumber="5432"
+          user="${POSTGRES_USER}" password="${POSTGRES_PASSWORD}"/>
     </dataSource>
     <library id="MySQLLib">
       <fileset dir="${shared.resource.dir}" includes="m*.jar"/>
