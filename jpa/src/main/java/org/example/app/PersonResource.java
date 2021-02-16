@@ -91,7 +91,7 @@ public class PersonResource {
         return person;
     }
 
-    @POST
+    //@POST
     public String createPersonXHTML(@QueryParam("name") @NotEmpty @Size(min = 2, max = 50) String name,
                              @QueryParam("age") @PositiveOrZero int age){
             try{
