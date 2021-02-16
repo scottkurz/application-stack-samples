@@ -32,7 +32,6 @@
         <version.maven-war-plugin>3.3.1</version.maven-war-plugin>
         <version.maven-surefire-plugin>3.0.0-M1</version.maven-surefire-plugin>
         <version.maven-failsafe-plugin>3.0.0-M1</version.maven-failsafe-plugin>
-        <maven.failsafe.debug>true</maven.failsafe.debug>
         <http.port>9080</http.port>
         <https.port>9443</https.port>
         <version.liberty-maven-plugin>3.2</version.liberty-maven-plugin>
