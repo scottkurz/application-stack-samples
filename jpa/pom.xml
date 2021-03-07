@@ -35,7 +35,7 @@
         <liberty.var.default.http.port>9080</liberty.var.default.http.port>
         <liberty.var.default.https.port>9443</liberty.var.default.https.port>
         <liberty.var.app.context.root>/</liberty.var.app.context.root>
-        <version.liberty-maven-plugin>3.2</version.liberty-maven-plugin>
+        <version.liberty-maven-plugin>3.3.4</version.liberty-maven-plugin>
     </properties>
 
     <groupId>dev.odo.starter.java-openliberty</groupId>
@@ -53,18 +53,18 @@
             <scope>provided</scope>
         </dependency>
         <!-- For tests -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>8.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.6.2</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -94,16 +94,26 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>yasson</artifactId>
-            <version>1.0.7</version>
-            <scope>test</scope>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
+            <version>1.1.4</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+           <groupId>com.fasterxml.jackson.jaxrs</groupId>
+           <artifactId>jackson-jaxrs-json-provider</artifactId>
+           <version>2.9.3</version>
         </dependency>
         <!-- Support for JDK 9 and above -->
         <dependency>
@@ -222,9 +232,9 @@
                             </includes>
                             <systemPropertyVariables>
                                 <http.port>${liberty.var.default.http.port}</http.port>
-                                <context.root>${liberty.var.app.context.root}</context.root>
+                                <app.context.root>${liberty.var.app.context.root}</app.context.root>
                                 <liberty.test.port>${http.port}</liberty.test.port>
-				                <war.name>${app.name}</war.name>
+                                <war.name>${app.name}</war.name>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
