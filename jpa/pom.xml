@@ -1,25 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<!--
- *
- * Copyright (c) 2019, 2021 IBM Corporation and others
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
--->
+<!-- * * Copyright (c) 2019, 2021 IBM Corporation and others * * See the 
+    NOTICE file(s) distributed with this work for additional * information regarding 
+    copyright ownership. * * Licensed under the Apache License, Version 2.0 (the 
+    "License"); * You may not use this file except in compliance with the License. 
+    * You may obtain a copy of the License at * * http://www.apache.org/licenses/LICENSE-2.0 
+    * * Unless required by applicable law or agreed to in writing, software * 
+    distributed under the License is distributed on an "AS IS" BASIS, * WITHOUT 
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * See the 
+    License for the specific language governing permissions and * limitations 
+    under the License. * -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -69,11 +59,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.1.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.21</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -84,26 +76,29 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
-            <version>3.3.6</version>
+            <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
-            <version>3.3.6</version>
+            <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>3.3.0</version>
+            <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
             <scope>test</scope>
         </dependency>
+  -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -111,62 +106,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-           <groupId>com.fasterxml.jackson.jaxrs</groupId>
-           <artifactId>jackson-jaxrs-json-provider</artifactId>
-           <version>2.9.3</version>
-        </dependency>
-        <!-- Support for JDK 9 and above -->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.9.3</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>2.3.0.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.3.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
-            <scope>test</scope>
-        </dependency>
+         </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-resource-adapter-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includeTypes>jar</includeTypes>
-                            <includeGroupIds>mysql,org.postgresql</includeGroupIds>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -189,6 +138,17 @@
                 <configuration>
                     <stripVersion>true</stripVersion>
                     <serverStartTimeout>360</serverStartTimeout>
+                    <copyDependencies>
+                        <location>${project.build.directory}/liberty/wlp/usr/shared/resources</location>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                        </dependency>
+                        <dependency>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                        </dependency>
+                    </copyDependencies>
                 </configuration>
             </plugin>
             <!-- Plugin to run unit tests -->
@@ -256,4 +216,60 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>docker</name>
+                </property>
+            </activation>
+            <properties>
+                <liberty.defaultVar.DATABASE_CLUSTERIP>localhost</liberty.defaultVar.DATABASE_CLUSTERIP>
+                <liberty.defaultVar.DATABASE_DB_NAME>sampledatabase</liberty.defaultVar.DATABASE_DB_NAME>
+                <liberty.defaultVar.DATABASE_DB_USER>sampleuser</liberty.defaultVar.DATABASE_DB_USER>
+                <liberty.defaultVar.DATABASE_DB_PASSWORD>samplepwd</liberty.defaultVar.DATABASE_DB_PASSWORD>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.34.1</version>
+                        <configuration>
+                            <logDate>none</logDate>
+                            <images>
+                                <image>
+                                    <alias>db</alias>
+                                    <name>postgres:9.6.0</name>
+                                    <run>
+                                        <cmd>-c max_prepared_transactions=30</cmd>
+                                        <namingStrategy>none</namingStrategy>
+                                        <env>
+                                            <POSTGRES_DB>${liberty.defaultVar.DATABASE_DB_NAME}</POSTGRES_DB>
+                                            <POSTGRES_USER>${liberty.defaultVar.DATABASE_DB_USER}</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>${liberty.defaultVar.DATABASE_DB_PASSWORD}</POSTGRES_PASSWORD>
+                                        </env>
+                                        <ports>
+                                            <port>5432:5432</port>
+                                        </ports>
+                                        <log>
+                                            <prefix>postgres</prefix>
+                                            <enabled>true</enabled>
+                                            <color>yellow</color>
+                                        </log>
+                                        <wait>
+                                            <time>30000</time> <!-- 30 seconds max -->
+                                            <log>.*database system is ready to accept connections</log>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
